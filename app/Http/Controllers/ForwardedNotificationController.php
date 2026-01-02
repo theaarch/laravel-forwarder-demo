@@ -14,6 +14,7 @@ class ForwardedNotificationController extends Controller
     public function index(Request $request)
     {
         $query = ForwardedNotification::query()
+            ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc');
 
         if ($search = $request->get('search')) {

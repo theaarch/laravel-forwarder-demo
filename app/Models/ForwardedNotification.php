@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ForwardedNotification extends Model
 {
@@ -12,7 +13,13 @@ class ForwardedNotification extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
         'from',
         'content',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

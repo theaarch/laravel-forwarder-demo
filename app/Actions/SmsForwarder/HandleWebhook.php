@@ -22,7 +22,10 @@ class HandleWebhook implements HandlesWebhooks
             'content' => ['required', 'string'],
         ]);
 
-        ForwardedNotification::query()->create($validated);
+        ForwardedNotification::query()->create([
+            ...$validated,
+            'user_id' => $request->user()->id,
+        ]);
 
         return new Response('Webhook Handled', Response::HTTP_OK);
     }
