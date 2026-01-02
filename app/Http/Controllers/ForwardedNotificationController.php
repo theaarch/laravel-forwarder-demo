@@ -13,12 +13,21 @@ class ForwardedNotificationController extends Controller
      */
     public function index(Request $request)
     {
+        $query = ForwardedNotification::query()
+            ->orderBy('created_at', 'desc');
+
+        if ($search = $request->get('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('from', 'like', "%{$search}%")
+                    ->orWhere('content', 'like', "%{$search}%");
+            });
+        }
+
         return Inertia::render('forwarded/notifications/page', [
-            'notifications' => ForwardedNotification::query()
-                ->orderBy('created_at', 'desc')
-                ->paginate(
-                    $request->get('per_page', 10),
-                ),
+            'notifications' => $query->paginate($request->get('per_page', 10)),
+            'filters' => [
+                'search' => $search ?? '',
+            ],
         ]);
     }
 
@@ -67,6 +76,10 @@ class ForwardedNotificationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $notification = ForwardedNotification::query()->findOrFail($id);
+
+        $notification->delete();
+
+        return back();
     }
 }
