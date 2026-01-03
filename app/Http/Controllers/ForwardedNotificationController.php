@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ForwardedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ForwardedNotificationController extends Controller
@@ -78,6 +79,8 @@ class ForwardedNotificationController extends Controller
     public function destroy(string $id)
     {
         $notification = ForwardedNotification::query()->findOrFail($id);
+
+        Gate::authorize('delete', $notification);
 
         $notification->delete();
 
